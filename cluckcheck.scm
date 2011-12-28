@@ -18,9 +18,12 @@
 	(define (gen-string)
 		(list->string (gen-list gen-char)))
 
-	(define (for-all property . generators)
-		(let ((values (map (lambda (x) (map (lambda (f) (f)) generators)) (iota 100))))
-			(let ((failure (find (lambda (vs) (not (apply property vs))) values)))
+    (define (gen-vector gen)
+        (list->vector (gen-list gen)))
+
+	(define (for-all property gen #!optional (tests 100) . generators)
+		(let* ((values (map (lambda (x) (map (lambda (f) (f)) (cons gen generators))) (iota tests)))
+			 (failure (find (lambda (vs) (not (apply property vs))) values)))
 				(if (list? failure)
 					(display (format "*** Failed!\n~a\n" failure))
-					(display (format "+++ OK, passed 100 tests\n")))))))
+					(display (format "+++ OK, passed ~a tests\n" tests))))))
