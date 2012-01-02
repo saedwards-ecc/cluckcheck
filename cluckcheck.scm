@@ -21,6 +21,17 @@
     (define (gen-vector gen)
         (list->vector (gen-list gen)))
 
+    (define (valid-spec? spec)
+        "check if the specification given to cluck check is a valid one"
+        #f)
+
+    (define (generate-spec-data spec)
+        "generate a list with random data that matches what is defined in spec"
+        #f)
+
+    (define (cluckcheck property spec #!optional (tests 100) (verbose #f))
+        #f) 
+
 	(define (for-all property gen #!optional (tests 100) . generators)
 		(let* ((values (map (lambda (x) (map (lambda (f) (f)) (cons gen generators))) (iota tests)))
 			 (failure (find (lambda (vs) (not (apply property vs))) values)))
