@@ -135,9 +135,9 @@
                                 error-count))))
             (display "Invalid specification\n")))
 
-    (define (for-all property gen #!optional (tests 100) . generators)
-        (let* ((values (map (lambda (x) (map (lambda (f) (f)) (cons gen generators))) (iota tests)))
+    (define (for-all property . generators)
+        (let* ((values (map (lambda (x) (map (lambda (f) (f)) generators)) (iota 100)))
                (failure (find (lambda (vs) (not (apply property vs))) values)))
               (if (list? failure)
-                    (display (format "*** Failed!\n~a\n" failure))
-                    (display (format "+++ OK, passed ~a tests\n" tests))))))
+                  (display (format "*** Failed!\n~a\n" failure))
+                  (display (format "+++ OK, passed 100 tests\n"))))))
