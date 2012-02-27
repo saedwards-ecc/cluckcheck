@@ -85,13 +85,13 @@
         (cond
             ((null? spec) '())
             ((scalar-spec-item? (car spec))
-             (cons (generate-scalar-spec-data (car spec)) (generate-spec-data (cdr spec))))
+             (cons (generate-scalar-spec-data (car spec)) (generate-spec-data (cddr spec))))
             ((eq? (car spec) 'list)
              (cons (generate-list (lambda () (generate-scalar-spec-data (cadr spec))))
-                   (generate-spec-data (cddr spec))))
+                   (generate-spec-data (cdddr spec))))
             ((eq? (car spec) 'vector)
              (cons (generate-vector (lambda () (generate-scalar-spec-data (cadr spec))))
-                   (generate-spec-data (cddr spec))))))
+                   (generate-spec-data (cdddr spec))))))
              
     (define (spec-pass? spec result)
         "verify that a result is in line with its specification"
@@ -106,13 +106,14 @@
                             (failure-count 0)
                             (pass-count 0)))
                 (if (< test-offset tests)
-                    (guard (cnd (display (format "--- Error!\n~a\n" cnd)) 
+                    (with-exception-handler (lambda (cnd) (display (format "--- Error!\n~a\n" cnd)) 
                             (test-loop
                                 (+ test-offset 1)
                                 (generate-spec-data spec) 
                                 (+ error-count 1)
                                 failure-count
                                 pass-count))
+                        (lambda ()
                         (if (spec-pass? spec (apply property test-data))
                             (test-loop
                                 (+ test-offset 1)
@@ -128,7 +129,7 @@
                                     (generate-spec-data spec)
                                     error-count
                                     (+ failure-count 1)
-                                    passcount))))
+                                    passcount)))))
                     (display (format "+++ Passing tests: ~a\n*** Failing tests: ~a\n--- Errors: ~a\n"
                                 pass-count
                                 failure-count
